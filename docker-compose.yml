@@ -310,6 +310,7 @@ services:
       default:
         aliases: [mender-workflows]
   traefik:
+    container_name: mender-traefik
     image: traefik:v3.1
     command:
       - --api=true
@@ -331,18 +332,22 @@ services:
       - ./compose/config/traefik:/etc/traefik/config:ro
       - ./compose/certs:/etc/traefik/certs:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../certbot/conf:/etc/letsencrypt
     ports:
-      - 443:443
-      - 80:80
+      - 445:443
+      - 81:80
     networks:
       default:
         aliases:
+          - mender-traefik
           - s3.localhost
           - mender.local
           - s3.mender.local
           - docker.mender.io
           - s3.docker.mender.io
-
+      api_gateway_network:
+        aliases:
+          - mender-traefik
   mongo:
     image: mongo:7.0
     ulimits:
@@ -372,3 +377,7 @@ services:
 
 volumes:
   mongo: {}
+
+networks:
+  api_gateway_network:
+    driver: bridge
