@@ -309,6 +309,7 @@ services:
     networks:
       default:
         aliases: [mender-workflows]
+
   traefik:
     container_name: mender-traefik
     image: traefik:v3.1
@@ -339,15 +340,12 @@ services:
     networks:
       default:
         aliases:
-          - mender-traefik
           - s3.localhost
           - mender.local
           - s3.mender.local
           - docker.mender.io
           - s3.docker.mender.io
-      api_gateway_network:
-        aliases:
-          - mender-traefik
+
   mongo:
     image: mongo:7.0
     ulimits:
@@ -377,7 +375,3 @@ services:
 
 volumes:
   mongo: {}
-
-networks:
-  api_gateway_network:
-    driver: bridge
